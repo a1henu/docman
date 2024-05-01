@@ -37,7 +37,6 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
 }
 
 int main(int argc, char** argv) {
-    std::unordered_map<std::string, CitationPtr> citations;
     std::string citationFile, inputFile, outputFile;
     std::stringstream outputBuf;
 
@@ -47,7 +46,6 @@ int main(int argc, char** argv) {
             std::exit(1);
         }
         citationFile = argv[2];
-        citations = loadCitations(citationFile);
         inputFile = argv[3];
 
     } else if (argc == 6) {
@@ -56,7 +54,6 @@ int main(int argc, char** argv) {
             std::exit(1);
         }
         citationFile = argv[2];
-        citations = loadCitations(citationFile);
         outputFile = argv[4];
         inputFile = argv[5];
 
@@ -72,12 +69,29 @@ int main(int argc, char** argv) {
     // auto input = readFromFile(argv[3]);
     // ...
     // print the paragraph first
+    std::unordered_map<std::string, CitationPtr> citations;
+    try {
+        citations = loadCitations(citationFile);
+    } catch(...) {
+        std::exit(1);
+    }
+
+    std::istream* input;
+    if (inputFile == "-") {
+        input = &std::cin;
+    } else {
+        input = new std::ifstream(inputFile);
+        if (!input->good()) {
+            std::cerr << "Failed to open input file\n";
+            std::exit(1);
+        }
+    }
+
     std::set<std::string> citationIDs;
-    std::ifstream inputFileStream{inputFile};
     std::string line;
     std::regex citationRegex{"\\[(.*?)\\]"};
 
-    while(std::getline(inputFileStream, line)) {
+    while(std::getline(*input, line)) {
         outputBuf << line << std::endl;
 
         std::smatch matches;
@@ -88,6 +102,13 @@ int main(int argc, char** argv) {
         }
     }
 
+    if (inputFile != "-") {
+        delete input;
+    }
+
+    if (citationIDs.empty()) {
+        std::exit(1);
+    }
     outputBuf << "\nReferences:\n";
     for (auto id : citationIDs) {
         outputBuf << citations[id]->toString() << std::endl;
