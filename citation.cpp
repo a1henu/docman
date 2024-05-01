@@ -39,13 +39,23 @@ std::string Article::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    std::string title       =    info["title"].get<std::string>();
-    std::string author      =    info["author"].get<std::string>();
-    std::string journal     =    info["journal"].get<std::string>();
-    std::string year        =    std::to_string(info["year"].get<int>());
-    std::string volume      =    std::to_string(info["volume"].get<int>());
-    std::string issue       =    std::to_string(info["issue"].get<int>());
-    return std::string("[" + id + "] article: " + author + ", " + title + ", " + journal + ", " + year + ", " + volume + ", " + issue );
+    if (info["title"].is_string() && 
+        info["author"].is_string() && 
+        info["journal"].is_string() && 
+        info["year"].is_number() && 
+        info["volume"].is_number() && 
+        info["issue"].is_number()) 
+    {        
+        std::string title       =    info["title"].get<std::string>();
+        std::string author      =    info["author"].get<std::string>();
+        std::string journal     =    info["journal"].get<std::string>();
+        std::string year        =    std::to_string(info["year"].get<int>());
+        std::string volume      =    std::to_string(info["volume"].get<int>());
+        std::string issue       =    std::to_string(info["issue"].get<int>());
+        return std::string("[" + id + "] article: " + author + ", " + title + ", " + journal + ", " + year + ", " + volume + ", " + issue );
+    } else {
+        std::exit(1);
+    }
 }
 
 // Book class
@@ -67,11 +77,20 @@ std::string Book::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    std::string author      =    info["author"].get<std::string>();
-    std::string title       =    info["title"].get<std::string>();
-    std::string publisher   =    info["publisher"].get<std::string>();
-    std::string year        =    info["year"].get<std::string>();
-    return std::string("[" + id + "] book: " + author + ", " + title + ", " + publisher + ", " + year);
+    if (info["author"].is_string() && 
+        info["title"].is_string() && 
+        info["publisher"].is_string() && 
+        info["year"].is_string()) 
+    {
+        std::string author      =    info["author"].get<std::string>();
+        std::string title       =    info["title"].get<std::string>();
+        std::string publisher   =    info["publisher"].get<std::string>();
+        std::string year        =    info["year"].get<std::string>();
+
+        return std::string("[" + id + "] book: " + author + ", " + title + ", " + publisher + ", " + year);
+    } else {
+        std::exit(1);
+    }
 }
 
 // WebPage class
@@ -93,6 +112,11 @@ std::string WebPage::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    std::string title = info["title"].get<std::string>();
-    return std::string("[" + id + "] webpage: " + title + ". Available at " + url);
+    if (info["title"].is_string()) {
+        std::string title = info["title"].get<std::string>();
+        return std::string("[" + id + "] webpage: " + title + ". Available at " + url);
+    } else {
+        std::exit(1);
+    }
+    
 }
