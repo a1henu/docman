@@ -15,6 +15,11 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     nlohmann::json data = nlohmann::json::parse(file)["citations"];
     std::unordered_map<std::string, CitationPtr> citations;
 
+    if (data.empty()) {
+        throw CitationError("No citations found in file: " + filename);
+        std::exit(1);
+    }
+
     for (auto& item : data) {
         std::string type = item["type"].get<std::string>();
         std::string id = item["id"].get<std::string>();
