@@ -87,6 +87,7 @@ int main(int argc, char** argv) {
         std::exit(1);
     }
 
+    // check if the input file is stdin
     std::istream* input;
     if (inputFile == "-") {
         input = &std::cin;
@@ -105,13 +106,17 @@ int main(int argc, char** argv) {
     while(std::getline(*input, line)) {
         outputBuf << line << std::endl;
 
+        // check if brackets are balanced
         for (char c : line) {
             if (c == '[') {
+                // left bracket means a new citation
                 ++bracketCount;
             } else if (c == ']') {
+                // right bracket means the end of a citation
                 --bracketCount;
             }
 
+            // if bracketCount is negative, it means there are more right brackets than left brackets
             if (bracketCount < 0) {
                 std::exit(1);
             }
@@ -125,6 +130,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    // if bracketCount is not 0, it means the number of left brackets is not equal to the number of right brackets
     if (bracketCount != 0) {
         std::exit(1);
     }
@@ -138,11 +144,10 @@ int main(int argc, char** argv) {
     }
     outputBuf << "\nReferences:\n";
     for (auto id : citationIDs) {
-        try{
-            outputBuf << citations[id]->toString() << std::endl;
-        } catch(...) {
+        if (citations.find(id) == citations.end()) {
             std::exit(1);
         }
+        outputBuf << citations[id]->toString() << std::endl;
     }
 
     if (argc == 4) {
