@@ -15,24 +15,20 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     std::ifstream file{filename};
     nlohmann::json citationJson;
 
-    try {
-        citationJson = nlohmann::json::parse(file);
-    } catch (...) {
-        std::exit(1);
-    }
-    
-    if (!citationJson.contains("citations")) {
+    citationJson = nlohmann::json::parse(file);
+
+    if (!citationJson.contains("citations") || citationJson.empty()) {
         std::exit(1);
     }
     nlohmann::json data = citationJson["citations"];
     std::unordered_map<std::string, CitationPtr> citations;
 
-    if (data.empty()) {
+    if (data.empty() || !data.is_array()) {
         std::exit(1);
     }
 
     for (auto& item : data) {
-        if (!item.contains("type") || !item.contains("id")) {
+        if (!item.contains("type") || !item.contains("id") || !item["type"].is_string() || !item["id"].is_string()) {
             std::exit(1);
         }
         std::string type = item["type"].get<std::string>();
@@ -97,7 +93,6 @@ int main(int argc, char** argv) {
     } else {
         input = new std::ifstream(inputFile);
         if (!input->good()) {
-            std::cerr << "Failed to open input file\n";
             std::exit(1);
         }
     }
@@ -153,7 +148,8 @@ int main(int argc, char** argv) {
     if (argc == 4) {
         std::cout << outputBuf.str();
     } else if (argc == 6) {
-        std::ofstream outputFileStream{outputFile};
+        std::ofstream outputFileStream;
+        outputFileStream.open(outputFile);
         outputFileStream << outputBuf.str();
     }
 
