@@ -17,6 +17,17 @@ std::string getFromWeb(const std::string& resource) {
 
 // Citation class
 
+Citation::Citation(const nlohmann::json& data) {
+    /*
+    This function is used to initialize a citation.
+    */
+    if (!data.contains("id")) {
+        std::exit(1);
+    }
+    id = data["id"].get<std::string>();
+    this->data = data;
+}
+
 std::string Citation::getResource() const {
     std::exit(1);
 }
@@ -26,6 +37,15 @@ std::string Citation::toString() const {
 }
 
 // Article class
+
+Article::Article(const nlohmann::json& data) : Citation(data) {
+    /*
+    This function is used to initialize an article.
+    */
+    if (!data.contains("journal") || !data.contains("year") || !data.contains("volume") || !data.contains("issue")) {
+        std::exit(1);
+    }
+}
 
 std::string Article::getResource() const {
     std::exit(1);
@@ -67,6 +87,16 @@ std::string Article::toString() const {
 }
 
 // Book class
+
+Book::Book(const nlohmann::json& data) : Citation(data) {
+    /*
+    This function is used to initialize a book.
+    */
+    if (!data.contains("isbn")) {
+        std::exit(1);
+    }
+    isbn = data["isbn"].get<std::string>();
+}
 
 std::string Book::getResource() const {
     /*
@@ -111,6 +141,16 @@ std::string Book::toString() const {
 }
 
 // WebPage class
+
+WebPage::WebPage(const nlohmann::json& data) : Citation(data) {
+    /*
+    This function is used to initialize a webpage.
+    */
+    if (!data.contains("url")) {
+        std::exit(1);
+    }
+    url = data["url"].get<std::string>();
+}
 
 std::string WebPage::getResource() const {
     /*

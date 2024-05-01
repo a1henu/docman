@@ -19,7 +19,7 @@ public:
     virtual ~Citation() = default;
 
     Citation() = default;
-    Citation(const nlohmann::json& data) : id(data["id"].get<std::string>()), data(data) {}
+    Citation(const nlohmann::json& data);
 
     virtual std::string getResource() const;
     virtual std::string toString() const;
@@ -31,7 +31,7 @@ public:
     ~Book() override = default;
 
     Book() = default;
-    Book(const nlohmann::json& data) : Citation(data), isbn(data["isbn"].get<std::string>()) {}
+    Book(const nlohmann::json& data);
 
     std::string getResource() const override;
     std::string toString() const override;
@@ -43,7 +43,7 @@ public:
     ~WebPage() override = default;
 
     WebPage() = default;
-    WebPage(const nlohmann::json& data) : Citation(data), url(data["url"].get<std::string>()) {}
+    WebPage(const nlohmann::json& data);
 
     std::string getResource() const override;
     std::string toString() const override;
@@ -54,7 +54,7 @@ public:
     ~Article() override = default;
 
     Article() = default;
-    Article(const nlohmann::json& data) : Citation(data) {}
+    Article(const nlohmann::json& data);
 
     std::string getResource() const override;
     std::string toString() const override;
