@@ -12,12 +12,15 @@
 std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& filename) {
     // FIXME: load citations from file
     std::ifstream file{filename};
-    nlohmann::json data;
+    nlohmann::json citationJson;
+
     try {
-        data = nlohmann::json::parse(file)["citations"];
-    } catch(...) {
+        file >> citationJson;
+    } catch (nlohmann::json::parse_error&) {
         std::exit(1);
     }
+    
+    nlohmann::json data = citationJson["citations"];
     std::unordered_map<std::string, CitationPtr> citations;
 
     if (data.empty()) {
