@@ -21,6 +21,9 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
         std::exit(1);
     }
     
+    if (!citationJson.contains("citations")) {
+        std::exit(1);
+    }
     nlohmann::json data = citationJson["citations"];
     std::unordered_map<std::string, CitationPtr> citations;
 
