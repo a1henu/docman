@@ -56,6 +56,7 @@ std::string Article::toString() const {
     This function is used to describe an article.
     */
     auto info = data;
+
     if (data.is_null()) {
         std::exit(1);
     }
@@ -92,7 +93,7 @@ Book::Book(const nlohmann::json& data) : Citation(data) {
     /*
     This function is used to initialize a book.
     */
-    if (!data.contains("isbn")) {
+    if (!data.contains("isbn") || !data["isbn"].is_string()) {
         std::exit(1);
     }
     isbn = data["isbn"].get<std::string>();
@@ -111,12 +112,8 @@ std::string Book::toString() const {
     /*
     This function is used to describe a book.
     */
-    nlohmann::json info;
-    try {
-        info = nlohmann::json::parse(getResource());
-    } catch (...) {
-        std::exit(1);
-    }
+    nlohmann::json info = nlohmann::json::parse(getResource());
+
     if (data.is_null()) {
         std::exit(1);
     }
@@ -146,7 +143,7 @@ WebPage::WebPage(const nlohmann::json& data) : Citation(data) {
     /*
     This function is used to initialize a webpage.
     */
-    if (!data.contains("url")) {
+    if (!data.contains("url") || !data["url"].is_string()) {
         std::exit(1);
     }
     url = data["url"].get<std::string>();
@@ -165,13 +162,8 @@ std::string WebPage::toString() const {
     /*
     This function is used to describe a webpage.
     */
-    nlohmann::json info;
-    try {
-        info = nlohmann::json::parse(getResource());
-    } catch (...) {
-        std::exit(1);
-    }
-    
+    nlohmann::json info = nlohmann::json::parse(getResource());
+
     if (data.is_null()) {
         std::exit(1);
     }
