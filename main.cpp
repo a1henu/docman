@@ -32,6 +32,9 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     }
 
     for (auto& item : data) {
+        if (!item.contains("type") || !item.contains("id")) {
+            std::exit(1);
+        }
         std::string type = item["type"].get<std::string>();
         std::string id = item["id"].get<std::string>();
         if (type == "book") {
