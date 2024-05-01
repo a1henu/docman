@@ -39,7 +39,13 @@ std::string Article::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    if (info["title"].is_string() && 
+    if (info.contains("title") &&
+        info.contains("author") &&
+        info.contains("journal") &&
+        info.contains("year") &&
+        info.contains("volume") &&
+        info.contains("issue") &&        
+        info["title"].is_string() && 
         info["author"].is_string() && 
         info["journal"].is_string() && 
         info["year"].is_number() && 
@@ -77,7 +83,11 @@ std::string Book::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    if (info["author"].is_string() && 
+    if (info.contains("author") &&
+        info.contains("title") &&
+        info.contains("publisher") &&
+        info.contains("year") &&
+        info["author"].is_string() && 
         info["title"].is_string() && 
         info["publisher"].is_string() && 
         info["year"].is_string()) 
@@ -112,7 +122,7 @@ std::string WebPage::toString() const {
     if (data.is_null()) {
         std::exit(1);
     }
-    if (info["title"].is_string()) {
+    if (info.contains("title") && info["title"].is_string()) {
         std::string title = info["title"].get<std::string>();
         return std::string("[" + id + "] webpage: " + title + ". Available at " + url);
     } else {

@@ -16,7 +16,7 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     nlohmann::json citationJson;
 
     try {
-        file >> citationJson;
+        citationJson = nlohmann::json::parse(file);
     } catch (...) {
         std::exit(1);
     }
