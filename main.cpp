@@ -39,6 +39,7 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
 }
 
 int main(int argc, char** argv) {
+    std::unordered_map<std::string, CitationPtr> citations;
     std::string citationFile, inputFile;
     std::ofstream outputFile;
     std::ostream* output;
@@ -50,6 +51,7 @@ int main(int argc, char** argv) {
             std::exit(1);
         }
         citationFile = argv[2];
+        citations = loadCitations(citationFile);
         output = &std::cout;
         inputFile = argv[3];
 
@@ -60,6 +62,7 @@ int main(int argc, char** argv) {
             std::exit(1);
         }
         citationFile = argv[2];
+        citations = loadCitations(citationFile);
         outputFile.open(argv[4]);
         if (!outputFile) {
             throw CitationError("Failed to open output file\n");
@@ -75,8 +78,6 @@ int main(int argc, char** argv) {
 
     }
     
-
-    std::unordered_map<std::string, CitationPtr> citations = loadCitations(citationFile);
     // std::vector<Citation*> printedCitations{};
 
     // FIXME: read all input to the string, and process citations in the input text
