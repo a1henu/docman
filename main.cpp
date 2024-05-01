@@ -9,8 +9,20 @@
 #include "utils.hpp"
 
 // use CitationPtr to represent a shared pointer to Citation
+bool hasJsonExtension(const std::string& filename) {
+    if (filename.size() < 5) {
+        return false;
+    }
+
+    return filename.substr(filename.size() - 5) == ".json";
+}
+
 std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& filename) {
     // FIXME: load citations from file
+    if (!hasJsonExtension(filename)) {
+        std::exit(1);
+    }
+
     std::ifstream file{filename};
     nlohmann::json citationJson;
 
