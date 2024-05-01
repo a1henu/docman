@@ -58,7 +58,9 @@ std::string Article::toString() const {
         std::string year        =    std::to_string(info["year"].get<int>());
         std::string volume      =    std::to_string(info["volume"].get<int>());
         std::string issue       =    std::to_string(info["issue"].get<int>());
-        return std::string("[" + id + "] article: " + author + ", " + title + ", " + journal + ", " + year + ", " + volume + ", " + issue );
+        return std::string(
+            "[" + id + "] article: " + author + ", " + title + ", " + journal + ", " + year + ", " + volume + ", " + issue
+        );
     } else {
         std::exit(1);
     }
@@ -79,7 +81,12 @@ std::string Book::toString() const {
     /*
     This function is used to describe a book.
     */
-    auto info = nlohmann::json::parse(getResource());
+    nlohmann::json info;
+    try {
+        info = nlohmann::json::parse(getResource());
+    } catch (...) {
+        std::exit(1);
+    }
     if (data.is_null()) {
         std::exit(1);
     }
@@ -118,7 +125,13 @@ std::string WebPage::toString() const {
     /*
     This function is used to describe a webpage.
     */
-    auto info = nlohmann::json::parse(getResource());
+    nlohmann::json info;
+    try {
+        info = nlohmann::json::parse(getResource());
+    } catch (...) {
+        std::exit(1);
+    }
+    
     if (data.is_null()) {
         std::exit(1);
     }
