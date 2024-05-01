@@ -111,7 +111,11 @@ int main(int argc, char** argv) {
     }
     outputBuf << "\nReferences:\n";
     for (auto id : citationIDs) {
-        outputBuf << citations[id]->toString() << std::endl;
+        try{
+            outputBuf << citations[id]->toString() << std::endl;
+        } catch(...) {
+            std::exit(1);
+        }
     }
 
     if (argc == 4) {
