@@ -99,9 +99,22 @@ int main(int argc, char** argv) {
     std::set<std::string> citationIDs;
     std::string line;
     std::regex citationRegex{"\\[(.*?)\\]"};
+    int bracketCount = 0;
 
     while(std::getline(*input, line)) {
         outputBuf << line << std::endl;
+
+        for (char c : line) {
+            if (c == '[') {
+                ++bracketCount;
+            } else if (c == ']') {
+                --bracketCount;
+            }
+
+            if (bracketCount < 0) {
+                std::exit(1);
+            }
+        }
 
         std::smatch matches;
         std::string::const_iterator searchStart(line.cbegin());
@@ -109,6 +122,10 @@ int main(int argc, char** argv) {
             citationIDs.insert(matches[1].str());
             searchStart = matches.suffix().first;
         }
+    }
+
+    if (bracketCount != 0) {
+        std::exit(1);
     }
 
     if (inputFile != "-") {
