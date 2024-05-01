@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <sstream>
 #include <unordered_map>
 #include <vector>
 
@@ -38,8 +39,7 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
 int main(int argc, char** argv) {
     std::unordered_map<std::string, CitationPtr> citations;
     std::string citationFile, inputFile, outputFile;
-    std::ofstream outputFileStream;
-    std::ostream* output;
+    std::stringstream outputBuf;
 
     if (argc == 4) {
         // "docman", "-c", "citations.json", "input.txt"
@@ -48,7 +48,6 @@ int main(int argc, char** argv) {
         }
         citationFile = argv[2];
         citations = loadCitations(citationFile);
-        output = &std::cout;
         inputFile = argv[3];
 
     } else if (argc == 6) {
@@ -72,12 +71,6 @@ int main(int argc, char** argv) {
     // FIXME: read all input to the string, and process citations in the input text
     // auto input = readFromFile(argv[3]);
     // ...
-
-    if (argc == 6) {
-        outputFileStream.open(outputFile);
-        output = &outputFileStream;
-    }
-
     // print the paragraph first
     std::set<std::string> citationIDs;
     std::ifstream inputFileStream{inputFile};
@@ -85,7 +78,7 @@ int main(int argc, char** argv) {
     std::regex citationRegex{"\\[(.*?)\\]"};
 
     while(std::getline(inputFileStream, line)) {
-        *output << line << std::endl;
+        outputBuf << line << std::endl;
 
         std::smatch matches;
         std::string::const_iterator searchStart(line.cbegin());
@@ -95,9 +88,16 @@ int main(int argc, char** argv) {
         }
     }
 
-    *output << "\nReferences:\n";
+    outputBuf << "\nReferences:\n";
     for (auto id : citationIDs) {
-        *output << citations[id]->toString() << std::endl;
+        outputBuf << citations[id]->toString() << std::endl;
+    }
+
+    if (argc == 4) {
+        std::cout << outputBuf.str();
+    } else if (argc == 6) {
+        std::ofstream outputFileStream{outputFile};
+        outputFileStream << outputBuf.str();
     }
 
 }
