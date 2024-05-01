@@ -1,5 +1,4 @@
 #include "./citation.h"
-#include "./error.h"
 #include "./utils.hpp"
 
 std::string getFromWeb(const std::string& resource) {
@@ -11,8 +10,7 @@ std::string getFromWeb(const std::string& resource) {
     if (res && res->status == httplib::OK_200) {
         return res->body;
     } else {
-        auto err = res.error();
-        std::cerr << "HTTP error: " << httplib::to_string(err) << std::endl;
+        std::exit(1);
         return std::string();
     } 
 }
@@ -20,7 +18,7 @@ std::string getFromWeb(const std::string& resource) {
 // Citation class
 
 std::string Citation::getResource() const {
-    throw CitationError("Citation::getResource() not implemented");
+    std::exit(1);
 }
 
 std::string Citation::toString() const {
@@ -30,7 +28,7 @@ std::string Citation::toString() const {
 // Article class
 
 std::string Article::getResource() const {
-    throw CitationError("Article::getResource() not implemented");
+    std::exit(1);
 }
 
 std::string Article::toString() const {
@@ -39,7 +37,7 @@ std::string Article::toString() const {
     */
     auto info = data;
     if (data.is_null()) {
-        throw CitationError("Failed to get data from the web");
+        std::exit(1);
     }
     std::string title       =    info["title"].get<std::string>();
     std::string author      =    info["author"].get<std::string>();
@@ -67,7 +65,7 @@ std::string Book::toString() const {
     */
     auto info = nlohmann::json::parse(getResource());
     if (data.is_null()) {
-        throw CitationError("Failed to get data from the web");
+        std::exit(1);
     }
     std::string author      =    info["author"].get<std::string>();
     std::string title       =    info["title"].get<std::string>();
@@ -93,7 +91,7 @@ std::string WebPage::toString() const {
     */
     auto info = nlohmann::json::parse(getResource());
     if (data.is_null()) {
-        throw CitationError("Failed to get data from the web");
+        std::exit(1);
     }
     std::string title = info["title"].get<std::string>();
     return std::string("[" + id + "] webpage: " + title + ". Available at " + url);

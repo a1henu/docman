@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "citation.h"
-#include "error.h"
 #include "utils.hpp"
 
 // use CitationPtr to represent a shared pointer to Citation
@@ -16,7 +15,6 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     std::unordered_map<std::string, CitationPtr> citations;
 
     if (data.empty()) {
-        throw CitationError("No citations found in file: " + filename);
         std::exit(1);
     }
 
@@ -30,7 +28,6 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
         } else if (type == "article") {
             citations[id] = std::make_shared<Article>(item);
         } else {
-            throw CitationError("Unknown citation type: " + type);
             std::exit(1);
         }
     }
@@ -47,7 +44,6 @@ int main(int argc, char** argv) {
     if (argc == 4) {
         // "docman", "-c", "citations.json", "input.txt"
         if (std::string(argv[1]) != "-c") {
-            std::cerr << "Invalid command line arguments\n";
             std::exit(1);
         }
         citationFile = argv[2];
@@ -58,7 +54,6 @@ int main(int argc, char** argv) {
     } else if (argc == 6) {
         // "docman", "-c", "citations.json", "-o", "output.txt", "input.txt"
         if (std::string(argv[1]) != "-c" || std::string(argv[3]) != "-o") {
-            throw CitationError("Invalid command line arguments\n");
             std::exit(1);
         }
         citationFile = argv[2];
@@ -68,7 +63,6 @@ int main(int argc, char** argv) {
 
     } else {
 
-        throw CitationError("Invalid command line arguments\n");
         std::exit(1);
 
     }
