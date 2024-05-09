@@ -47,7 +47,11 @@ std::unordered_map<std::string, CitationPtr> loadCitations(const std::string& fi
     }
 
     for (auto& item : data) {
-        if (!item.contains("type") || !item.contains("id") || !item["type"].is_string() || !item["id"].is_string()) {
+        if (
+            !item.contains("type")    || 
+            !item.contains("id")      || 
+            !item["type"].is_string() || 
+            !item["id"].is_string()) {
             std::exit(1);
         }
         std::string type = item["type"].get<std::string>();
@@ -115,10 +119,11 @@ std::tuple<std::string, std::string, std::string> parseArgs(int argc, char** arg
     return std::make_tuple(citationFile, inputFile, outputFile);
 }
 
-void outputCitations(std::istream& input, 
-                    std::stringstream& outputBuf, 
-                    const std::unordered_map<std::string, CitationPtr>& citations)
-{
+void outputCitations(
+    std::istream& input, 
+    std::stringstream& outputBuf, 
+    const std::unordered_map<std::string, CitationPtr>& citations
+) {
     /*
     Process citations in the input text and output them.
 
